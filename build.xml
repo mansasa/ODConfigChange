@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<project name="ODConfigChange" default="build-jar">
+
+	<path id="jar-project-classpath">
+		<fileset dir="lib" includes="*.jar" />
+	</path>
+
+	<target name="clean">
+		<delete dir="bin" />
+		<mkdir dir="bin" />
+	</target>
+
+	<target name="copy-non-java-files">
+		<copy todir="bin" includeemptydirs="false">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+	</target>
+
+	<target name="compile-jar-classes" depends="clean,copy-non-java-files">
+		<javac srcdir="src" destdir="bin" classpathref="jar-project-classpath" />
+	</target>
+
+	<target name="clean-jar">
+		<delete dir="build" />
+		<mkdir dir="build" />
+	</target>
+
+	<property name="build-info.current-time" value=""/>
+	<property name="build-info.current-date" value=""/>
+	<property name="builder" value=""/>
+	<target name="jar">
+
+		<jar basedir="bin" destfile="build/ODConfigChange.jar">
+			<zipgroupfileset dir="lib" includes="*.jar" />
+			<manifest>
+				<attribute name="Built-By" value="${builder}" />
+				<attribute name="Built-On" value="${build-info.current-date}" />
+				<attribute name="Built-At" value="${build-info.current-time}" />
+				<attribute name="Main-Class" value="com.tesco.custom.CopyOfODConfiguration" />
+			</manifest>
+		</jar>
+
+	</target>
+	<target name="build-jar">
+		<antcall target="compile-jar-classes" />
+		<antcall target="clean-jar" />
+		<antcall target="jar" />
+	</target>
+
+</project>
